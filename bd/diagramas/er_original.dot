@@ -1,0 +1,35 @@
+digraph ER_ORIGINAL {
+  graph [rankdir=LR, nodesep=1.0, bgcolor="white", fontname="Helvetica",
+         label="Modelo original — inventory_br.mdb (MS Access, VB6)\nSin llaves primarias ni foráneas; categoría y marca como texto repetido",
+         labelloc=t, fontsize=16, pad=0.4];
+  node  [shape=plaintext, fontname="Helvetica", fontsize=11];
+
+  Inventory [label=<
+  <table border="0" cellborder="1" cellspacing="0" cellpadding="5" color="#8A4B2F">
+    <tr><td bgcolor="#8A4B2F" colspan="2"><font color="white"><b>Inventory</b></font></td></tr>
+    <tr><td align="left">Category</td><td align="left">Texto</td></tr>
+    <tr><td align="left">Brand</td><td align="left">Texto</td></tr>
+    <tr><td align="left">Item Description</td><td align="left">Texto</td></tr>
+    <tr><td align="left">Model Number</td><td align="left">Texto</td></tr>
+    <tr><td align="left">Stock</td><td align="left">Número</td></tr>
+    <tr><td align="left">CPU (Unit Cost)</td><td align="left">Texto/Número</td></tr>
+    <tr><td align="left">TCost (Total Cost)</td><td align="left">Texto — calculado y guardado</td></tr>
+  </table>>];
+
+  Stock [label=<
+  <table border="0" cellborder="1" cellspacing="0" cellpadding="5" color="#8A4B2F">
+    <tr><td bgcolor="#8A4B2F" colspan="2"><font color="white"><b>Stock</b></font></td></tr>
+    <tr><td align="left">Date</td><td align="left">Texto (dd/mm/yyyy)</td></tr>
+    <tr><td align="left">Category</td><td align="left">Texto — duplicado</td></tr>
+    <tr><td align="left">Brand</td><td align="left">Texto — duplicado</td></tr>
+    <tr><td align="left">Item Description</td><td align="left">Texto — duplicado</td></tr>
+    <tr><td align="left">Model Number</td><td align="left">Texto — duplicado</td></tr>
+    <tr><td align="left">Stock In</td><td align="left">Número</td></tr>
+    <tr><td align="left">Stock Out</td><td align="left">Número</td></tr>
+    <tr><td align="left">CPU (Unit Cost)</td><td align="left">Texto/Número</td></tr>
+    <tr><td align="left">TCost (Total Cost)</td><td align="left">Texto</td></tr>
+  </table>>];
+
+  Inventory -> Stock [style=dashed, color="#999999", arrowhead=none,
+                      label="sin relación formal\n(se copian los campos)", fontname="Helvetica", fontsize=10];
+}

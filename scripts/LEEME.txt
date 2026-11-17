@@ -1,0 +1,47 @@
+SISTEMA DE INVENTARIO {{VERSION}}
+Reingeniería de un sistema legacy (VB6 + MS Access) a React + Node.js + MySQL
+
+REQUISITO
+  Un servidor MySQL 8.0.16+ o MariaDB 10.6+ encendido en esta computadora.
+  No hace falta instalar Node.js ni cargar scripts SQL a mano.
+
+CÓMO USARLO
+  Windows:  doble clic en inventario.exe
+  Linux:    abre una terminal en esta carpeta y ejecuta   ./inventario
+
+  La primera vez pregunta servidor, puerto, usuario y contraseña de MySQL,
+  crea la base de datos "inventario_web" con datos de ejemplo y abre el
+  navegador en http://localhost:3000. Los datos de conexión se guardan en
+  inventario.env (junto al ejecutable) y ya no se vuelven a pedir.
+
+  Usuarios de prueba:
+    admin@inventario.local    / Admin123*      (Admin)
+    almacen@inventario.local  / Almacen123*    (Almacén)
+
+OPCIONES (desde la terminal)
+  --reset        Borra la base de datos y la deja como recién instalada
+  --configurar   Vuelve a pedir los datos de conexión a MySQL
+  --puerto 8080  Usa otro puerto web
+  --no-abrir     No abre el navegador
+  --ayuda        Muestra todas las opciones
+
+  Windows (PowerShell en esta carpeta):  .\inventario.exe --reset
+  Linux:                                 ./inventario --reset
+
+PROBLEMAS COMUNES
+  "MySQL no está encendido"
+     Windows: net start MySQL80 (PowerShell como administrador) o Start en XAMPP
+     Linux:   sudo systemctl start mysql     (o mariadb)
+
+  Linux: "rechazó el usuario root"
+     En Ubuntu/Debian/Fedora/Arch, root solo entra con sudo. El programa te
+     muestra el comando para crear un usuario "inventario"; cópialo, pégalo
+     y vuelve a intentar con ese usuario.
+
+  Linux: "Permission denied" al ejecutar
+     chmod +x inventario
+
+  Windows: aviso de SmartScreen ("Windows protegió su PC")
+     El ejecutable no está firmado. Clic en "Más información" > "Ejecutar de todas formas".
+
+Código fuente y documentación: https://github.com/BraulioP-ai/inventario-reingenieria

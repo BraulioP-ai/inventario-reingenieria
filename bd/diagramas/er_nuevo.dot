@@ -1,0 +1,73 @@
+digraph ER {
+  graph [rankdir=LR, splines=spline, nodesep=0.7, ranksep=1.1, bgcolor="white",
+         fontname="Helvetica", label="Modelo Entidad-Relación — inventario_web (MySQL)", labelloc=t, fontsize=18, pad=0.4];
+  node  [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge  [fontname="Helvetica", fontsize=11, color="#2F5D8A", penwidth=1.4, arrowhead=crow, arrowtail=tee, dir=both, labeldistance=2.2, labelangle=25];
+
+  categorias [label=<
+  <table border="0" cellborder="1" cellspacing="0" cellpadding="5" color="#2F5D8A">
+    <tr><td bgcolor="#2F5D8A" colspan="2"><font color="white"><b>categorias</b></font></td></tr>
+    <tr><td align="left"><b>PK</b></td><td align="left" port="pk">id_categoria  INT</td></tr>
+    <tr><td></td><td align="left">nombre  VARCHAR(60)  UQ</td></tr>
+    <tr><td></td><td align="left">descripcion  VARCHAR(255)</td></tr>
+    <tr><td></td><td align="left">activo  BOOLEAN</td></tr>
+    <tr><td></td><td align="left">creado_en  DATETIME</td></tr>
+  </table>>];
+
+  marcas [label=<
+  <table border="0" cellborder="1" cellspacing="0" cellpadding="5" color="#2F5D8A">
+    <tr><td bgcolor="#2F5D8A" colspan="2"><font color="white"><b>marcas</b></font></td></tr>
+    <tr><td align="left"><b>PK</b></td><td align="left" port="pk">id_marca  INT</td></tr>
+    <tr><td></td><td align="left">nombre  VARCHAR(60)  UQ</td></tr>
+    <tr><td></td><td align="left">activo  BOOLEAN</td></tr>
+    <tr><td></td><td align="left">creado_en  DATETIME</td></tr>
+  </table>>];
+
+  productos [label=<
+  <table border="0" cellborder="1" cellspacing="0" cellpadding="5" color="#2F5D8A">
+    <tr><td bgcolor="#2F5D8A" colspan="2"><font color="white"><b>productos</b></font></td></tr>
+    <tr><td align="left"><b>PK</b></td><td align="left" port="pk">id_producto  INT</td></tr>
+    <tr><td align="left" port="fkc"><b>FK</b></td><td align="left">id_categoria  INT</td></tr>
+    <tr><td align="left" port="fkm"><b>FK</b></td><td align="left">id_marca  INT</td></tr>
+    <tr><td></td><td align="left">modelo  VARCHAR(60)  UQ(marca, modelo)</td></tr>
+    <tr><td></td><td align="left">descripcion  VARCHAR(255)</td></tr>
+    <tr><td></td><td align="left">costo_unitario  DECIMAL(10,2)</td></tr>
+    <tr><td></td><td align="left">stock_actual  INT</td></tr>
+    <tr><td></td><td align="left">stock_minimo  INT</td></tr>
+    <tr><td></td><td align="left">activo  BOOLEAN</td></tr>
+    <tr><td></td><td align="left">creado_en / actualizado_en  DATETIME</td></tr>
+  </table>>];
+
+  movimientos [label=<
+  <table border="0" cellborder="1" cellspacing="0" cellpadding="5" color="#2F5D8A">
+    <tr><td bgcolor="#2F5D8A" colspan="2"><font color="white"><b>movimientos</b></font></td></tr>
+    <tr><td align="left"><b>PK</b></td><td align="left" port="pk">id_movimiento  INT</td></tr>
+    <tr><td align="left" port="fkp"><b>FK</b></td><td align="left">id_producto  INT</td></tr>
+    <tr><td align="left" port="fku"><b>FK</b></td><td align="left">id_usuario  INT</td></tr>
+    <tr><td></td><td align="left">tipo  ENUM(ENTRADA, SALIDA)</td></tr>
+    <tr><td></td><td align="left">cantidad  INT  (&gt; 0)</td></tr>
+    <tr><td></td><td align="left">costo_unitario  DECIMAL(10,2)</td></tr>
+    <tr><td></td><td align="left">fecha  DATETIME</td></tr>
+    <tr><td></td><td align="left">nota  VARCHAR(255)</td></tr>
+  </table>>];
+
+  usuarios [label=<
+  <table border="0" cellborder="1" cellspacing="0" cellpadding="5" color="#2F5D8A">
+    <tr><td bgcolor="#2F5D8A" colspan="2"><font color="white"><b>usuarios</b></font></td></tr>
+    <tr><td align="left"><b>PK</b></td><td align="left" port="pk">id_usuario  INT</td></tr>
+    <tr><td></td><td align="left">nombre  VARCHAR(100)</td></tr>
+    <tr><td></td><td align="left">email  VARCHAR(120)  UQ</td></tr>
+    <tr><td></td><td align="left">password_hash  CHAR(60)</td></tr>
+    <tr><td></td><td align="left">rol  ENUM(ADMIN, ALMACEN)</td></tr>
+    <tr><td></td><td align="left">activo  BOOLEAN</td></tr>
+    <tr><td></td><td align="left">creado_en  DATETIME</td></tr>
+  </table>>];
+
+  categorias:pk:e -> productos:fkc:w [taillabel="1", headlabel="N", xlabel="clasifica"];
+  marcas:pk:e -> productos:fkm:w [taillabel="1", headlabel="N", xlabel="fabrica"];
+  productos:pk:e -> movimientos:fkp:w [taillabel="1", headlabel="N", xlabel="registra"];
+  usuarios:pk:e -> movimientos:fku:w [taillabel="1", headlabel="N", xlabel="captura"];
+
+  {rank=same; categorias; marcas;}
+  {rank=same; productos; usuarios;}
+}

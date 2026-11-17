@@ -1,0 +1,22 @@
+{
+  "name": "inventario-reingenieria",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de Inventario: reingeniería de un sistema legacy (VB6 + MS Access) a React + Node.js + MySQL",
+  "scripts": {
+    "postinstall": "npm --prefix backend install && npm --prefix frontend install && npm --prefix frontend run build",
+    "start": "npm --prefix backend start --",
+    "dev": "npm --prefix backend run dev --",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "test": "npm --prefix backend test",
+    "ejecutables": "node scripts/construir-ejecutable.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@yao-pkg/pkg": "^6.25.0",
+    "esbuild": "^0.28.2"
+  }
+}
