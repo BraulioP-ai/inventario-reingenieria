@@ -103,7 +103,7 @@ npm run ejecutables -- linux-arm64      # otros destinos: windows-x64, linux-x64
 
 Empaqueta backend, frontend y scripts SQL en un solo archivo con [esbuild](https://esbuild.github.io/) y lo convierte en ejecutable con [pkg](https://github.com/yao-pkg/pkg), que ya incluye Node.js.
 
-Al subir una etiqueta `v*` (por ejemplo `git tag v1.0.1 && git push --tags`), GitHub Actions corre las pruebas contra MySQL 8, genera los ejecutables y los publica en Releases.
+GitHub Actions corre las pruebas contra MySQL 8 en cada push. Para publicar una versión nueva, sube el número de `version` en el `package.json` de la raíz (por ejemplo a `1.0.1`) y haz push a `main`: Actions genera los ejecutables, crea la etiqueta `v1.0.1` y los publica en Releases. Subir una etiqueta `v*` a mano hace lo mismo.
 
 ---
 

@@ -1,5 +1,9 @@
 name: Pruebas y ejecutables
 
+# - Cada push y pull request: pruebas de la API contra MySQL 8.
+# - Cuando en main hay una versión nueva en package.json (sin release todavía),
+#   o al subir una etiqueta v*: genera los ejecutables y publica el Release.
+
 on:
   push:
     branches: [main]
@@ -29,6 +33,9 @@ jobs:
       DB_USER: root
       DB_PASSWORD: root
       JWT_SECRET: secreto-de-pruebas-en-ci
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      publicar: ${{ steps.version.outputs.publicar }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,11 +47,24 @@ jobs:
       - name: Crear la BD (lo mismo que hace el sistema al arrancar)
         run: npm start -- --no-abrir --puerto 3000 & sleep 15 && curl -sf http://localhost:3000/api/salud
       - run: npm test
+      - name: ¿Hay versión nueva para publicar?
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "publicar=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$GITHUB_REF" == refs/heads/main && "$GITHUB_EVENT_NAME" != pull_request ]] \
+               && ! git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" > /dev/null; then
+            echo "publicar=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "publicar=false" >> "$GITHUB_OUTPUT"
+          fi
 
   ejecutables:
     name: Ejecutables (${{ matrix.destino }})
     needs: pruebas
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: needs.pruebas.outputs.publicar == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -67,8 +87,8 @@ jobs:
 
   publicar:
     name: Publicar Release
-    needs: ejecutables
-    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [pruebas, ejecutables]
+    if: needs.pruebas.outputs.publicar == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -77,7 +97,10 @@ jobs:
           merge-multiple: true
       - uses: softprops/action-gh-release@v2
         with:
-          name: Sistema de Inventario ${{ github.ref_name }}
+          tag_name: v${{ needs.pruebas.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: Sistema de Inventario v${{ needs.pruebas.outputs.version }}
+          make_latest: true
           files: dist/*
           body: |
             Descarga el archivo de tu sistema, descomprímelo y ejecútalo:
@@ -88,3 +111,5 @@ jobs:
 
             Requisito: MySQL 8.0.16+ o MariaDB 10.6+ encendido. La primera vez pregunta los datos de conexión y crea la base de datos sola.
             Usuarios de prueba: `admin@inventario.local` / `Admin123*` y `almacen@inventario.local` / `Almacen123*`.
+
+            Instrucciones completas y solución de problemas: ver el README del repositorio.
